@@ -30,7 +30,7 @@ def showgraph(graph):
     nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.5)
     nx.draw_networkx_labels(G, pos, font_size=12, font_family='sans-serif', font_color="whitesmoke")
 
-    plt.title('Visualize A Unweighted Graph')
+    plt.title('Graph Visualization')
     plt.axis('off')
     plt.show()
 
@@ -60,7 +60,7 @@ def showpath(graph, path):
 
     fig, ax = plt.subplots(figsize=(8, 6))
     fig = pylab.gcf()
-    fig.canvas.manager.set_window_title('Visualize The Path in a Unweighted Graph')
+    fig.canvas.manager.set_window_title('Visualize The Shortest Path in a Unweighted Graph')
 
     # Draw nodes
     nx.draw_networkx_nodes(G, pos, node_color=node_color_list, node_size=node_size_list, **options, ax=ax)
@@ -207,5 +207,35 @@ def showweightedpath(graph, path):
         plt.axis('off')
 
     ani = animation.FuncAnimation(fig, update, frames=len(path_edges)+1, repeat=False, interval=500)  # Adjust interval for smoothness
+
+    def on_hover(event):
+        if event.inaxes == ax:
+            cont, ind = scatter.contains(event)
+            if cont:
+                # Get the index of the hovered node
+                index = ind['ind'][0]
+                node = list(G.nodes())[index]
+                if node == starting_node:
+                    ax.set_title('Hovering over the starting node')
+                elif node == ending_node:
+                    ax.set_title('Hovering over the ending node')
+                else:
+                    ax.set_title(f'Hovered over node: {node}')
+                fig.canvas.draw_idle()
+            else:
+                ax.set_title('Graph Visualization with Highlighted Path')
+                fig.canvas.draw_idle()
+
+    # Create a scatter plot for hover and click detection
+    scatter = ax.scatter(
+        [pos[node][0] for node in G.nodes()],
+        [pos[node][1] for node in G.nodes()],
+        s=[node_sizes[node] for node in G.nodes()],
+        c=[node_colors[node] for node in G.nodes()],
+        edgecolors=options["edgecolors"],
+        alpha=options["alpha"]
+    )
+
+    fig.canvas.mpl_connect('motion_notify_event', on_hover)
 
     plt.show()
