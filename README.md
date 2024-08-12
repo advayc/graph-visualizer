@@ -16,10 +16,10 @@ pip install networkx matplotlib
 
 ### Importing the Functions
 
-To use the visualization functions, import them from the `graph_representation.visualize` module:
+To use the visualization functions, import them from the respective directory:
 
 ```python
-from graph_representation.visualize import showgraph, showpath
+from graph_visualizer.visualize import showgraph, showpath
 ```
 
 ### Function: `showgraph`
