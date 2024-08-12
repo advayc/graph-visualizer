@@ -30,7 +30,7 @@ def showgraph(graph):
     nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.5)
     nx.draw_networkx_labels(G, pos, font_size=12, font_family='sans-serif', font_color="whitesmoke")
 
-    plt.title('Graph Visualization')
+    plt.title('Visualize A Unweighted Graph')
     plt.axis('off')
     plt.show()
 
@@ -60,7 +60,7 @@ def showpath(graph, path):
 
     fig, ax = plt.subplots(figsize=(8, 6))
     fig = pylab.gcf()
-    fig.canvas.manager.set_window_title('Visualize The Shortest Path in a Unweighted Graph')
+    fig.canvas.manager.set_window_title('Visualize The Path in a Unweighted Graph')
 
     # Draw nodes
     nx.draw_networkx_nodes(G, pos, node_color=node_color_list, node_size=node_size_list, **options, ax=ax)
@@ -178,4 +178,34 @@ def showweightedpath(graph, path):
 
     ani = animation.FuncAnimation(fig, update, frames=len(path_edges)+1, repeat=False, interval=500)  # Adjust interval for smoothness
 
+    plt.show()
+
+def showweightedgraph(graph):
+    G = nx.DiGraph()
+
+    # Add edges to the graph with weights
+    for node in graph:
+        for neighbor, weight in graph[node].items():
+            G.add_edge(node, neighbor, weight=weight)
+
+    # Define node colors
+    node_colors = {node: 'tab:blue' for node in G.nodes()}
+    node_colors[list(G.nodes())[0]] = 'tab:red'  # Highlight the first node
+
+    pos = nx.spring_layout(G, seed=3113794652)  # positions for all nodes
+
+    options = {"edgecolors": "tab:gray", "node_size": 800, "alpha": 0.9}
+    node_color_list = [mcolors.CSS4_COLORS.get(node_colors[node], 'tab:blue') for node in G.nodes()]
+
+    # Draw nodes, edges, and labels
+    nx.draw_networkx_nodes(G, pos, node_color=node_color_list, **options)
+    nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.5)
+    nx.draw_networkx_labels(G, pos, font_size=12, font_family='sans-serif', font_color="whitesmoke")
+
+    # Draw edge labels (weights)
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='red')
+
+    plt.title('Weighted Graph Visualization')
+    plt.axis('off')
     plt.show()
